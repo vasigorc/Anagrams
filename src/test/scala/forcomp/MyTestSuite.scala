@@ -18,4 +18,11 @@ class MyTestSuite extends FunSuite with Matchers{
     //"Hai Moldova" doit renvoyer une liste de tuples ou 'a' figurerais deux fois
     sentenceOccurrences(List("Hai", "Moldova")).head should equal(('a', 2))
   }
+
+  test("that the entire dictionary contains occurrences that can be mapped to multiple words"){
+    var sum = 0
+    dictionaryByOccurrences foreach(anagram => if(anagram._2.size > 1) sum+=1)
+    assert(sum > 1)
+    info(s"We have $sum anagrams that are mapped to 1+ words")
+  }
 }
