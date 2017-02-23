@@ -25,4 +25,8 @@ class MyTestSuite extends FunSuite with Matchers{
     assert(sum > 1)
     info(s"We have $sum anagrams that are mapped to 1+ words")
   }
+
+  test("moist and omits shold come up as part of the same anagram"){
+    wordAnagrams("moist").size should be (2)
+  }
 }

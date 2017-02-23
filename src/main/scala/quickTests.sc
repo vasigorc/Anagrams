@@ -7,3 +7,5 @@ List("A","Day","In","The","Life") mkString(" ")
 dictionary map(word => (wordOccurrences(word), word)) groupBy(_._1) map{
   case (occur, list) => (occur, list map(_._2))
 }
+
+dictionaryByOccurrences filter(elem => elem._2 contains("Scala")) flatMap(_._2) toList
