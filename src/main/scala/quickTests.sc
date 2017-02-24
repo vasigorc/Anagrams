@@ -9,3 +9,7 @@ dictionary map(word => (wordOccurrences(word), word)) groupBy(_._1) map{
 }
 
 dictionaryByOccurrences filter(elem => elem._2 contains("Scala")) flatMap(_._2) toList
+
+val list = List(('a', 2), ('b', 2))
+
+combinations(list)

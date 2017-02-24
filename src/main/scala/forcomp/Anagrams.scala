@@ -61,7 +61,7 @@ object Anagrams {
     }
 
   /** Returns all the anagrams of a given word. */
-  def wordAnagrams(word: Word): List[Word] = dictionaryByOccurrences filter(elem => elem._2 contains(word)) flatMap(_._2) toList
+  def wordAnagrams(word: Word): List[Word] = dictionaryByOccurrences(wordOccurrences(word))
 
   /** Returns the list of all subsets of the occurrence list.
    *  This includes the occurrence itself, i.e. `List(('k', 1), ('o', 1))`
@@ -85,7 +85,12 @@ object Anagrams {
    *  Note that the order of the occurrence list subsets does not matter -- the subsets
    *  in the example above could have been displayed in some other order.
    */
-  def combinations(occurrences: Occurrences): List[Occurrences] = ???
+
+  def combinations(occurrences: Occurrences): List[Occurrences] =
+    (occurrences foldRight List[Occurrences](Nil)) { case ((ch,count), acc) => {
+      acc ++ ( for { list <- acc; i <- 1 to count } yield (ch, i) :: list )
+      }
+    }
 
   /** Subtracts occurrence list `y` from occurrence list `x`.
    *
@@ -97,7 +102,9 @@ object Anagrams {
    *  Note: the resulting value is an occurrence - meaning it is sorted
    *  and has no zero-entries.
    */
-  def subtract(x: Occurrences, y: Occurrences): Occurrences = ???
+  def subtract(x: Occurrences, y: Occurrences): Occurrences =
+    y.foldLeft(x){ case (acc, (yChar, yCount)) => for ((accChar, accCount) <- acc) yield (accChar, if(accChar == yChar) accCount - yCount else accCount)
+  }.filter(occur => occur._2 > 0)
 
   /** Returns a list of all anagram sentences of the given sentence.
    *
