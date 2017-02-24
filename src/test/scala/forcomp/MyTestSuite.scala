@@ -29,4 +29,8 @@ class MyTestSuite extends FunSuite with Matchers{
   test("moist and omits shold come up as part of the same anagram"){
     wordAnagrams("moist").size should be (2)
   }
+
+  test("example from the assignment should return a list of 9 elements"){
+    combinations(List(('a', 2), ('b', 2))).size should be(9)
+  }
 }
