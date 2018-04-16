@@ -1,5 +1,7 @@
 package forcomp
 
+import forcomp.Anagrams.sentenceOccurrences
+
 
 object Anagrams {
 
@@ -103,12 +105,14 @@ object Anagrams {
     *  and has no zero-entries.
     */
   def subtract(x: Occurrences, y: Occurrences): Occurrences =
-    (for {
-      (yChar, yCount) <- y
-      (xChar, xCount) <- x
-      currentCount = if(xChar == yChar) xCount - yCount else xCount
-    } yield (xChar, currentCount))
-      .filter(occur => occur._2 > 0)
+    (x /: y)((newx, elemy) =>
+      (for (elemx <- newx) yield if(elemx._1 == elemy._1) (elemx._1, elemx._2 - elemy._2) else elemx)).filter (_._2 > 0).sorted
+//      (for {
+//      (yChar, yCount) <- y
+//      (xChar, xCount) <- x
+//      currentCount = if(xChar == yChar) xCount - yCount else xCount
+//    } yield (xChar, currentCount))
+//      .filter(occur => occur._2 > 0).sorted
 
   /** Returns a list of all anagram sentences of the given sentence.
     *
@@ -150,5 +154,22 @@ object Anagrams {
     *
     *  Note: There is only one anagram of an empty sentence.
     */
-  def sentenceAnagrams(sentence: Sentence): List[Sentence] = ???
+  def sentenceAnagrams(sentence: Sentence): List[Sentence] = {
+
+    def helper(occurences: Occurrences): List[Sentence] = occurences match {
+      case Nil => List(Nil)
+      case x::xs => {
+          val combin = combinations(occurences)
+        for {
+          occur <- combin
+          if dictionaryByOccurrences.keySet(occur)
+          word <-dictionaryByOccurrences(occur)
+          //each loop (incl the first invokation is working on the remaining set of (char, int)
+          wordsFromRemainingChars <- helper(subtract(occurences, occur))
+        } yield word :: wordsFromRemainingChars
+      }
+    }
+
+    helper(sentenceOccurrences(sentence))
+  }
 }
